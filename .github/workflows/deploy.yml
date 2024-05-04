@@ -1,4 +1,4 @@
-name: Deploy Vite Multiple Assets site to Pages
+name: Deploy Rspress site to Pages
 
 on:
   push:
@@ -37,7 +37,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build with Rspress
-        run:  pnpm run build
+        run: |
+          pnpm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
