@@ -1,4 +1,4 @@
-name: Deploy Rspress site to Pages
+name: Deploy Vite Multiple Assets site to Pages
 
 on:
   push:
