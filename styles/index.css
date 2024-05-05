@@ -1,0 +1,21 @@
+:root {
+    /* Modify theme color */
+    --rp-c-brand: #71bedb;
+    --rp-c-brand-dark: #71bedb;
+    --rp-c-brand-darker: #9589ea;
+    --rp-c-brand-light: #71bedb;
+    --rp-c-brand-lighter: #71bedb;
+    --rp-c-brand-tint: rgba(127, 163, 255, 0.16);
+    --rp-code-title-bg: rgba(250, 192, 61, 0.15);
+    --rp-code-block-bg: rgba(214, 188, 70, 0.05);
+    --rp-custom-block-info-bg: rgba(250, 192, 61, 0.05);
+    --rp-custom-block-info-border: rgba(61, 177, 250, 0.5);
+    /* Modify the width of the left sidebar */
+    --rp-sidebar-width: 280px;
+    /* Modify the width of the right outline column */
+    --rp-aside-width: 256px;
+    /* Modify the background of the code block title */
+    --rp-code-title-bg: rgba(250, 192, 61, 0.15);
+    /* Modify the background of the code block content */
+    --rp-code-block-bg: rgba(214, 188, 70, 0.05);
+}
