@@ -13,8 +13,8 @@ hero:
       text: Github
       link: https://github.com/nguyenbatranvan/vite-multiple-assets
   image:
-    src: /logo.png
-    alt: Rspress Logo
+    src: /logo-home.png
+    alt: Vite Logo
 features:
   - title: No copy
     details: No copy file when run dev, help with no impact on performance when launching apps with vite.
