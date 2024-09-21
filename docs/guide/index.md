@@ -68,8 +68,6 @@ export interface IConfigExtend extends Partial<Pick<Options, "ignore" | "dot">> 
     dst?: string | FDst;
 }
 
-export type IMIME = Record<string, string>;
-
 export interface IConfig extends 
     IConfigExtend, 
     Partial<Pick<Options, "onlyFiles" | "onlyDirectories" | "cwd" | "markDirectories">> 
@@ -78,6 +76,9 @@ export interface IConfig extends
     ssr?: boolean;
 }
 ```
+
+<!-- NOTE: for documenters, these options is ordered from the most important to the less -->
+<!-- NOTE: types sample using `var` instead of `let` and `const` as function arguments are `var` by design -->
 
 ### `assets`
 
@@ -108,6 +109,12 @@ export default defineConfig({
 ```
 
 ### `opts.cwd`
+
+```ts
+var opts_cwd: string = process.cwd();
+```
+
+Where does the beginning root to traverse all directory and files. If you not define, it would goes using Vite's `.root`. If not defined, it would goes using `process.cwd()` by default.
 
 ### `opts.ssr`
 
@@ -169,6 +176,85 @@ You could define your extended content types using `opts.mimeTypes`. This featur
 4. just use `.html` content type from `opts.mimeTypes` and then `internalMimeTypes`. If not exists,
 5. just lookup `.html` content type from `mime-types`
 
+### `opts.ignore`
+
+```ts
+var opts_ignore: string[] = [];
+```
+
+List of pattern to be ignored. If you want to include all files from root and inside `public/` but not the public itself, you could do as follow:
+
+```ts
+export default defineConfig({
+    plugins: [
+        DynamicPublicDirectory( [ "public/**", "**" ], {
+            ignore: ["/public"]
+        } )
+    ],
+    publicDir: false,
+})
+```
+
+**Notice:** `public/**` and `/public` are different.
+
 ### `opts.dst`
 
-### `opts.ignore`
+### `opts.dot`
+
+```ts
+var opts_dot: boolean = true;
+```
+
+Also search for dotfile (hidden files of linux). Those are in examples `.env`, `.npmrc`, `.git/`, `.gitignore/`, etc. For conveince to make everything discoverable, this option is `true` by default.
+
+### `opts.onlyFiles`
+
+```ts
+var opts_onlyFiles: boolean = true;
+```
+
+Search and gather only files (with no directories). For convenience to get lower size and more countable, this option is `true` by default. If you want to also copy empty folder, you could set `false` to this options. It would be wise if you also set `opts.onlyDirectories` to `false`.
+
+### `opts.onlyDirectories`
+
+```ts
+var opts_onlyDirectories: boolean = false;
+```
+
+Search and gather only directories (with no files). Opposite to `opts.onlyFies`, this option is `false` by default. Assuming, just copying folders is useless.
+
+> Enable this options can lead to duplication issue, the folder which contains files inside it also reached, and also all folders inside it. When coping the folder, the same folders may be copied twice or more. 
+
+### `opts.markDirectories`
+
+```ts
+var opts_markDirectories: boolean = true;
+```
+
+Mark all path of directory noticeable by adding the last slash at the end of the path. For conveince, this option is `true` by default. Assume this structure:
+
+```css
+dirA/
+\_ dirAA/
+\_ file.txt
+dirB/
+```
+
+The list of folder could be:
+
+```css
+dirA/
+dirA/dirAA/
+dirA/file.txt
+dirB/
+```
+
+## Enforced Behaviors
+
+All `opts.*` internally directly passed to `fast-glob`, so you could override `opts` types and use any `fast-glob` available flags. This is not recommended as these options already selected to fit internal logic and this plugin original use-case and ideation. Even though that, there is options that is enforced to satisfy internal logic.
+
+## `opts.absolute`
+
+```ts
+const opts_absolute: boolean = true;
+```

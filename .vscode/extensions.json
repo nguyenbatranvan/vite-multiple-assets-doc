@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "github.vscode-github-actions",
-        "bierner.github-markdown-preview"
+        "bierner.github-markdown-preview",
+        "exodiusstudios.comment-anchors"
     ]
 }
