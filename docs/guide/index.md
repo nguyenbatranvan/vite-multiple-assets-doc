@@ -48,7 +48,7 @@ export default defineConfig({
 ```
 * With the above configuration will automatically add files in `libs/assets`, `repo1/assets` folders as static assets for your project
 * It also recommended to set `publicDir` to `false` to avoid confusion
-* Notic the wildcard `**`, this plugin use glob pattern by default. You could also review [fast-glob](https://www.npmjs.com/package/fast-glob) and [micromatch](https://www.npmjs.com/package/micromatch/v/3.1.10)
+* Notice the wildcard `**`, this plugin use glob pattern by default. You could also review [fast-glob](https://www.npmjs.com/package/fast-glob) and [micromatch](https://www.npmjs.com/package/micromatch)
 
 ### Example
 [Detail](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/react/vite.config.ts)
@@ -127,7 +127,7 @@ Where does the beginning root to traverse all directory and files. If you not de
 ### `opts.ssr`
 
 ```ts
-var opts_ssr: boolean | undefined = false;
+var opts_ssr: boolean = false;
 ```
 
 SSR option accept certain value:
