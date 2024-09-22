@@ -339,4 +339,4 @@ All `opts.*` internally directly passed to `fast-glob`, so you could override `o
 const opts_absolute: boolean = false;
 ```
 
-This option is forced to be `false`. All path would return to relative path from `cwd` such as `C:/Users/user/` or `/home/user/` (notice they are forward-slash). These is intended due to simpler internal logic, and to ensure this plugin would copy the right file and folder with no ambiguity.
+This option is forced to be `false`. All path would return to relative path from `cwd`. These is intended due to simpler internal logic, and easier in rejoin path to `dst`.
