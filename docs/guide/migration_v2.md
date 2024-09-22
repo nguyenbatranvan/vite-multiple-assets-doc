@@ -12,7 +12,7 @@ DynamicPublicDirectory(["public/**", "**"], {
 }) as PluginOption,
 ```
 
-**What does it do?** \
+**What does it do?**
 - It would copy everything from public to `dist/`
 - It would also copy everything from the root to `dist/`
 - But, except junks and cache like `.git`, `*.local`, and `node_modules`
@@ -30,7 +30,7 @@ This major is taking advantage of Globs Pattern using [fast-glob](https://www.np
 import DynamicPublicDirectory from "vite-multiple-assets";
 // same level as project root
 - const dirAssets=["libs/assets","repo1/assets", "/"];
-+ const dirAssets=["libs/assets/**","repo1/assets/**", "**"];
++ const dirAssets=["libs/{\x01,assets}/**","repo1/{\x01,assets}/**", "**"];
 
 // example
 const mimeTypes = {

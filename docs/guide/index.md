@@ -29,7 +29,7 @@ In `vite.config.ts`
 import { type PluginOption } from 'vite'
 import DynamicPublicDirectory from "vite-multiple-assets";
 // same level as project root
-const dirAssets = ["public/**", "libs/assets/**", "repo1/assets/**"];
+const dirAssets = ["public/**", "libs/{\x01,assets}/**", "repo1/{\x01,assets}/**"];
 
 // example
 const mimeTypes = {
@@ -72,13 +72,14 @@ export interface IConfig extends
     IConfigExtend, 
     Partial<Pick<Options, "onlyFiles" | "onlyDirectories" | "cwd" | "markDirectories">> 
 {
+    __dst?: string; // NOTE: internal destination from parsing rollup write bundlers nor vite config.
     mimeTypes?: IMIME;
     ssr?: boolean;
 }
 ```
 
 <!-- NOTE: for documenters, these options is ordered from the most important to the less -->
-<!-- NOTE: types sample using `var` instead of `let` and `const` as function arguments are `var` by design -->
+<!-- NOTE: types preview using `var` instead of `let` and `const` as function arguments are `var` by design -->
 
 ### `assets`
 
@@ -106,6 +107,13 @@ export default defineConfig({
     ],
     publicDir: false,
 })
+```
+
+Match and out examples:
+
+```ts
+`/a/b/c/d/**`           + `/a/b/c/d/efg.txt`    = `efg.txt`
+`/a/b/{\x01,c}/d/**`    + `/a/b/c/d/efg.txt`    = `c/d/efg.txt`
 ```
 
 ### `opts.cwd`
@@ -199,6 +207,78 @@ export default defineConfig({
 
 ### `opts.dst`
 
+```ts
+// NOTE: internal destination from parsing rollup write bundlers nor vite config.
+// If opts.dst is defined and is string,
+let opts_0__dst: string = opts_dst || writeBundleOptions?.dir || viteConfig?.build.outDir;
+
+var opts_dst: string | FDst = writeBundleOptions?.dir || viteConfig?.build.outDir;
+
+export type FDst = (params: {
+    // CORE
+    dst: string;        // destination folder
+    assets: IAssets;    // list of assets pattern
+
+    // UTILITIES
+    filepath: string;   // absolute path to the source file would be copied
+    baseFile: string;   // internal normalization; most common to use this one
+    dstFile: string;    // NOTE: either absolut or non-slash on beginning path to target copied;
+                        //       default destination to the last filename
+    
+    // MUTABLE
+    writeBundleOptions?: NormalizedOutputOptions; // modify rollup option
+    viteConfig: IViteResolvedConfig; // modify vite option
+    opts: IConfig;  // {__dst, ...opts}; 
+                    // modify internal configuration
+    __files: IFilesMapper; // NOTE: internal use to modify all compiled files entirely;
+                           // NOTE: user can return false and define its own compilation
+}) => string | false | void;
+
+export type IFilesMapper = Partial<Record<string, string>>; // STUB: { baseTransformedFilePath: toAbsolutePath }
+```
+
+Where the files would be copied. In default, it would reuse Rollup output or Vite output. This options allow user to reroutes to different folder, or prorammatically reroutes these copied files and rename it. Programmatically reroutes has 3 return options:
+- `string`: path with filename relative to default destination directory, or absolute path. Rules from `assets` also applied.
+- `false`: do not copy file. Can be use to programmatically ignore certain file. Use this if you need complex use-case.
+- `void`: copy to default name and destination
+
+You could reroutes to different folder:
+
+```ts
+import path from "path/posix"; // NOTE: use posix for relative transformation
+
+DynamicPublicDirectory(["public/**"], {
+  // goto `.cache/` instead of `dist/`
+  dst: path.join(__dirname, ".cache"),
+})
+```
+
+You could also make your own `ignore` and filter:
+
+```ts
+DynamicPublicDirectory(["public/**"], {
+  dst: ({ dstFile, filepath, }) => filepath.match(/.jpg$/ig) ? false : undefined,
+})
+```
+
+If you need to add more files which not depend with this plugin's internal logic; or you need to modify base for SSR, you could modify `__files`.
+
+```ts
+let nonce = false;
+
+DynamicPublicDirectory(["public/**"], {
+  dst: ({
+    opts: {__dst, ...opts}, __files, // muttable
+    dstFile, filepath, baseFile, // useful params to use
+  }) => {
+    if (!nonce) {
+      __files["new-no/existing/file.png"] = "/home/me/Pictures/image.png"
+      nonce = true;
+    }
+  }
+})
+```
+
 ### `opts.dot`
 
 ```ts
@@ -256,5 +336,7 @@ All `opts.*` internally directly passed to `fast-glob`, so you could override `o
 ## `opts.absolute`
 
 ```ts
-const opts_absolute: boolean = true;
+const opts_absolute: boolean = false;
 ```
+
+This option is forced to be `false`. All path would return to relative path from `cwd` such as `C:/Users/user/` or `/home/user/` (notice they are forward-slash). These is intended due to simpler internal logic, and to ensure this plugin would copy the right file and folder with no ambiguity.
