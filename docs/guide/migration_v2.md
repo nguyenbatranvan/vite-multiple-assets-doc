@@ -5,6 +5,8 @@
 Basically, this major would allow you to do this:
 
 ```ts
+import { DynamicPublicDirectory } from "vite-multiple-assets";
+
 const defaultExcluded = ["{,**/}.git/**", "{,**/}{,*}.local{,/**}", "src/**", "dist/**", "node_modules/**", "public/**", "vite.config.*.*"];
 
 DynamicPublicDirectory(["public/**", "**"], {
@@ -27,7 +29,8 @@ This major is taking advantage of Globs Pattern using [fast-glob](https://www.np
 
 ```diff
 + import { type PluginOption } from 'vite'
-import DynamicPublicDirectory from "vite-multiple-assets";
+- import DynamicPublicDirectory from "vite-multiple-assets";
++ import { DynamicPublicDirectory } from "vite-multiple-assets";
 // same level as project root
 - const dirAssets=["libs/assets","repo1/assets", "/"];
 + const dirAssets=["libs/{\x01,assets}/**","repo1/{\x01,assets}/**", "**"];

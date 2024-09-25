@@ -27,7 +27,7 @@ npm i -D vite-multiple-assets
 In `vite.config.ts`
 ```ts
 import { type PluginOption } from 'vite'
-import DynamicPublicDirectory from "vite-multiple-assets";
+import { DynamicPublicDirectory } from "vite-multiple-assets";
 // same level as project root
 const dirAssets = ["public/**", "libs/{\x01,assets}/**", "repo1/{\x01,assets}/**"];
 
