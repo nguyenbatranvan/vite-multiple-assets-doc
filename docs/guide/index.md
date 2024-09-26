@@ -50,6 +50,22 @@ export default defineConfig({
 * It also recommended to set `publicDir` to `false` to avoid confusion
 * Notice the wildcard `**`, this plugin use glob pattern by default. You could also review [fast-glob](https://www.npmjs.com/package/fast-glob) and [micromatch](https://www.npmjs.com/package/micromatch)
 
+### Astro Support
+
+In `astro.config.mjs`
+```ts
+import {defineConfig} from 'astro/config';
+import {astroMultipleAssets} from "vite-multiple-assets";
+
+const assets = ['public2/**'];
+// https://astro.build/config
+export default defineConfig({
+    integrations: [
+        astroMultipleAssets(assets)
+    ],
+});
+```
+
 ### Example
 [Detail](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/react/vite.config.ts)
 
@@ -240,7 +256,7 @@ export type IFilesMapper = Partial<Record<string, string>>; // STUB: { baseTrans
 Where the files would be copied. In default, it would reuse Rollup output or Vite output. This options allow user to reroutes to different folder, or prorammatically reroutes these copied files and rename it. Programmatically reroutes has 3 return options:
 - `string`: path with filename relative to default destination directory, or absolute path. Rules from `assets` also applied.
 - `false`: do not copy file. Can be use to programmatically ignore certain file. Use this if you need complex use-case.
-- `void`: copy to default name and destination
+- `undefined`: copy to default name and destination
 
 You could reroutes to different folder:
 
