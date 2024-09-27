@@ -1,5 +1,5 @@
 import {Hero as BaseHero} from '@rstack-dev/doc-ui/hero';
-import './Hero.module.scss';
+import './hero.module.scss';
 import {useNavigate} from 'rspress/runtime';
 
 export function Hero() {
