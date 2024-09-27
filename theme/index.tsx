@@ -1,30 +1,29 @@
 import Theme from 'rspress/theme';
 import '../styles/index.css';
-
-// const predefinedQuestions = {
-//   zh: [
-//     '什么是 Rspress？',
-//     '在 Rspress 中如何自定义全局样式？',
-//     '提供一个简单的 Rspress 插件示例。',
-//     '如何在 Rspress 中自定义主题？',
-//   ],
-//   en: [
-//     'What is Rspress?',
-//     'How to customize global styles in Rspress?',
-//     'Provide a simple Rspress plugin example。',
-//     'How to customize themes in Rspress?',
-//   ],
-// };
-
+import "./index.scss"
+import { HomeLayout } from './pages';
+import { NoSSR } from 'rspress/runtime';
+import {Announcement} from "@rstack-dev/doc-ui/announcement";
 const Layout = () => {
     return (
-        <Theme.Layout/>
+
+        <Theme.Layout
+            beforeNav={
+                <NoSSR>
+                    <Announcement
+                        message={"Vite multiple assets v2.0.0 released"}
+                        localStorageKey="rsbuild-announcement-closed"
+                    />
+                </NoSSR>
+            }
+        />
     );
 };
 
 export default {
     ...Theme,
     Layout,
+    HomeLayout
 };
 
 export * from 'rspress/theme';

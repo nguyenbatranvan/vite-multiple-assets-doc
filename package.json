@@ -8,9 +8,13 @@
     "preview": "rspress preview"
   },
   "dependencies": {
-    "rspress": "^1.0.0"
+    "rspress": "^1.31.1"
   },
   "devDependencies": {
-    "@types/node": "^16"
+    "@types/node": "18.x",
+    "@types/react": "^18.3.9",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.6.2",
+    "@rstack-dev/doc-ui": "^1.5.2"
   }
 }
