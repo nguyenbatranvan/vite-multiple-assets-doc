@@ -67,8 +67,9 @@ export default defineConfig({
 ```
 
 ### Example
-[Detail](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/react/vite.config.ts)
-
+- [React](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/react/vite.config.ts)
+- [Solid](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/solid/vite.config.ts)
+- [Astro](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/astro/astro.config.mjs)
 ## Options
 
 ```ts
@@ -140,6 +141,17 @@ var opts_cwd: string = process.cwd();
 
 Where does the beginning root to traverse all directory and files. If you not define, it would goes using Vite's `.root`. If not defined, it would goes using `process.cwd()` by default.
 
+### `opts.cacheOptions`
+
+```ts
+{
+    "Cache-Control":"max-age=31536000, immutable",
+    ...
+}
+```
+- Default: No cache
+
+**Note**:  Working only development
 ### `opts.ssr`
 
 ```ts

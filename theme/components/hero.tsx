@@ -17,8 +17,9 @@ export function Hero() {
             onClickLearnMore={handleClickLearnMore}
             title="Vite Multiple Assets"
             subTitle={'Multiple public directory'}
-            description={'Support for multiple public asset directories to vite (or astro).'}
-            logoUrl="/logo-home.png"
+            description={'Support for multiple public asset directories to vite (solidjs, react, vue, astro, or maybe with libraries and frameworks compiled from vite).'}
+            logoUrl="/vite-multiple-assets/logo-home.png"
+            showOvalBg={true}
             getStartedButtonText={'Quick Start'}
             learnMoreButtonText={'Github'}
         />
