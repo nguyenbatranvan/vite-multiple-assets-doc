@@ -101,8 +101,12 @@ export interface IConfig extends
 ### `assets`
 
 ```ts
+export type IObjectAssets = {
+    input: string;
+    output: string;
+}
 var assets: IAssets = [];
-type IAssets = string[];
+export type IAssets = (string | IObjectAssets)[];
 ```
 
 List copied `assets` by following pattern defined in [`fast-glob` pattern](https://github.com/mrmlnc/fast-glob?tab=readme-ov-file#pattern-syntax) which is [Unix Glob](https://man7.org/linux/man-pages/man7/glob.7.html) [Pattern](https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html). There are few things to take:
@@ -132,6 +136,30 @@ Match and out examples:
 `/a/b/c/d/**`           + `/a/b/c/d/efg.txt`    = `efg.txt`
 `/a/b/{\x01,c}/d/**`    + `/a/b/c/d/efg.txt`    = `c/d/efg.txt`
 ```
+
+### Custom output assets
+
+Similar to the above configurations, the only difference is that you can add output with your own paths
+
+```ts
+export default defineConfig({
+    plugins: [
+        DynamicPublicDirectory([
+            {
+                input: "public/{\x01, models}/**",
+                output: "/shared/assets/models"
+            }, // order is important
+            "public/**", // same {input:public/**, output:""}
+            "../../assets/**" // you could go to upper level
+        ])
+    ],
+    publicDir: false,
+})
+```
+so files in `public/models` will be copied to `shared/assets/models`
+
+
+
 
 ### `opts.cwd`
 
