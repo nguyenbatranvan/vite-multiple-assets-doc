@@ -1,6 +1,9 @@
 # Setup
+
 `vite-multiple-assets` support vite to run with multiple directory public directory.
+
 ## Feature
+
 - No copy file when run dev, help with no impact on performance when launching apps with vite
 - Support automatically copy files when running build
 - Support SSR
@@ -8,12 +11,14 @@
 ## Quick setup would be in the `vite.config.js`:
 
 * Default with vite's configuration you can only use 1 publicDir in `vite.config.ts`
+
 ```ts
 export default defineConfig({
     // default is public folder
-    publicDir:''
+    publicDir: ''
 })
 ```
+
 * With this plugin you can add multiple public folders
 
 ## Install
@@ -25,20 +30,21 @@ npm i -D vite-multiple-assets
 ## Basic Usage
 
 In `vite.config.ts`
+
 ```ts
-import { type PluginOption } from 'vite'
-import { DynamicPublicDirectory } from "vite-multiple-assets";
+import {type PluginOption} from 'vite'
+import {DynamicPublicDirectory} from "vite-multiple-assets";
 // same level as project root
 const dirAssets = ["public/**", "libs/{\x01,assets}/**", "repo1/{\x01,assets}/**"];
 
 // example
 const mimeTypes = {
-    '.acc':'application/acc'
+    '.acc': 'application/acc'
 }
 
 export default defineConfig({
     plugins: [
-        DynamicPublicDirectory( dirAssets, {
+        DynamicPublicDirectory(dirAssets, {
             ssr: true,
             mimeTypes
         }) as PluginOption
@@ -46,13 +52,17 @@ export default defineConfig({
     publicDir: false,
 })
 ```
-* With the above configuration will automatically add files in `libs/assets`, `repo1/assets` folders as static assets for your project
+
+* With the above configuration will automatically add files in `libs/assets`, `repo1/assets` folders as static assets
+  for your project
 * It also recommended to set `publicDir` to `false` to avoid confusion
-* Notice the wildcard `**`, this plugin use glob pattern by default. You could also review [fast-glob](https://www.npmjs.com/package/fast-glob) and [micromatch](https://www.npmjs.com/package/micromatch)
+* Notice the wildcard `**`, this plugin use glob pattern by default. You could also
+  review [fast-glob](https://www.npmjs.com/package/fast-glob) and [micromatch](https://www.npmjs.com/package/micromatch)
 
 ### Astro Support
 
 In `astro.config.mjs`
+
 ```ts
 import {defineConfig} from 'astro/config';
 import {astroMultipleAssets} from "vite-multiple-assets";
@@ -67,28 +77,28 @@ export default defineConfig({
 ```
 
 ### Example
+
 - [React](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/react/vite.config.ts)
 - [Solid](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/solid/vite.config.ts)
 - [Astro](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/astro/astro.config.mjs)
+
 ## Options
 
 ```ts
-import type { PluginOption } from "vite";
+import type {PluginOption} from "vite";
 
 export default function DynamicPublicDirectory(assets: IAssets, opts: IConfig = {}): PluginOption
 ```
 
 ```ts
-import type { Options } from "fast-glob";
+import type {Options} from "fast-glob";
 
 export interface IConfigExtend extends Partial<Pick<Options, "ignore" | "dot">> {
     dst?: string | FDst;
 }
 
-export interface IConfig extends 
-    IConfigExtend, 
-    Partial<Pick<Options, "onlyFiles" | "onlyDirectories" | "cwd" | "markDirectories">> 
-{
+export interface IConfig extends IConfigExtend,
+    Partial<Pick<Options, "onlyFiles" | "onlyDirectories" | "cwd" | "markDirectories">> {
     __dst?: string; // NOTE: internal destination from parsing rollup write bundlers nor vite config.
     mimeTypes?: IMIME;
     ssr?: boolean;
@@ -104,27 +114,33 @@ export interface IConfig extends
 export type IObjectAssets = {
     input: string;
     output: string;
+    watch?: boolean;
 }
 var assets: IAssets = [];
 export type IAssets = (string | IObjectAssets)[];
 ```
 
-List copied `assets` by following pattern defined in [`fast-glob` pattern](https://github.com/mrmlnc/fast-glob?tab=readme-ov-file#pattern-syntax) which is [Unix Glob](https://man7.org/linux/man-pages/man7/glob.7.html) [Pattern](https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html). There are few things to take:
+List copied `assets` by following pattern defined in [
+`fast-glob` pattern](https://github.com/mrmlnc/fast-glob?tab=readme-ov-file#pattern-syntax) which
+is [Unix Glob](https://man7.org/linux/man-pages/man7/glob.7.html) [Pattern](https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html).
+There are few things to take:
 
 - always use forward-slash `/` for path, and use backslash to escape character
-- do not use single-dot `./**/*.txt` `./abc/**/*.txt` for current path, instead straight use the pattern `**/*.txt` `abc/**/*.txt`
-- If you are hope certain folder included to be copied, make it in selectable list pattern, `dir1/{\x01,folder_name}/**`. Just ensure there is no folder or file named by first ascii
+- do not use single-dot `./**/*.txt` `./abc/**/*.txt` for current path, instead straight use the pattern `**/*.txt`
+  `abc/**/*.txt`
+- If you are hope certain folder included to be copied, make it in selectable list pattern,
+  `dir1/{\x01,folder_name}/**`. Just ensure there is no folder or file named by first ascii
 
 For example:
 
 ```ts
 export default defineConfig({
     plugins: [
-        DynamicPublicDirectory( [
+        DynamicPublicDirectory([
             "public/{\x01, models}/**", // order is important
             "public/**", // basic public needs
             "../../assets/**" // you could go to upper level
-        ] )
+        ])
     ],
     publicDir: false,
 })
@@ -133,8 +149,8 @@ export default defineConfig({
 Match and out examples:
 
 ```ts
-`/a/b/c/d/**`           + `/a/b/c/d/efg.txt`    = `efg.txt`
-`/a/b/{\x01,c}/d/**`    + `/a/b/c/d/efg.txt`    = `c/d/efg.txt`
+`/a/b/c/d/**` + `/a/b/c/d/efg.txt` = `efg.txt`
+    `/a/b/{\x01,c}/d/**` + `/a/b/c/d/efg.txt` = `c/d/efg.txt`
 ```
 
 ### Custom output assets
@@ -156,10 +172,13 @@ export default defineConfig({
     publicDir: false,
 })
 ```
+
+- `input`: Path of public folder
+- `output`: output of public directory
+- `watch`: Watch shared folder changes! Whenever a new file is added or deleted, the page will automatically reload.
+  Default `false`.
+
 so files in `public/models` will be copied to `shared/assets/models`
-
-
-
 
 ### `opts.cwd`
 
@@ -167,19 +186,24 @@ so files in `public/models` will be copied to `shared/assets/models`
 var opts_cwd: string = process.cwd();
 ```
 
-Where does the beginning root to traverse all directory and files. If you not define, it would goes using Vite's `.root`. If not defined, it would goes using `process.cwd()` by default.
+Where does the beginning root to traverse all directory and files. If you not define, it would goes using Vite's
+`.root`. If not defined, it would goes using `process.cwd()` by default.
 
 ### `opts.cacheOptions`
 
 ```ts
 {
-    "Cache-Control":"max-age=31536000, immutable",
-    ...
+    "Cache-Control"
+:
+    "max-age=31536000, immutable",
+...
 }
 ```
+
 - Default: No cache
 
 **Note**:  Working only development
+
 ### `opts.ssr`
 
 ```ts
@@ -187,10 +211,12 @@ var opts_ssr: boolean = false;
 ```
 
 SSR option accept certain value:
+
 - `true`: support using Solid-js or framework with SSR
 - `false` (default): support client side, static build
 
-If you need to go up, you could use `%2E%2E/file.txt` as alternative of `../file.txt`. Also, you could you `%2Fetc/wwwroot` as alternative of `/etc/wwwroot`. Just in case you need it.
+If you need to go up, you could use `%2E%2E/file.txt` as alternative of `../file.txt`. Also, you could you
+`%2Fetc/wwwroot` as alternative of `/etc/wwwroot`. Just in case you need it.
 
 ### `opts.mimeTypes`
 
@@ -232,11 +258,14 @@ const internalMimeTypes: IMIME = {
 
 ```
 
-You could define your extended content types using `opts.mimeTypes`. This feature could be use when using `SSR` mode. There are few hierarchi when choosing the right types:
+You could define your extended content types using `opts.mimeTypes`. This feature could be use when using `SSR` mode.
+There are few hierarchi when choosing the right types:
 
 1. get the last extention and compare it to your `opt.mimeTypes`. If not exists,
 2. get the last extention and compare it to `internalMimeTypes`. If not exists,
-3. do `mime.lookup` to the entire filename so it will be automatically handled according to the [```mime-types```](https://www.npmjs.com/package/mime-types) library by [`mime-db`](https://www.npmjs.com/package/mime-db). If not exists,
+3. do `mime.lookup` to the entire filename so it will be automatically handled according to the [
+   ```mime-types```](https://www.npmjs.com/package/mime-types) library by [
+   `mime-db`](https://www.npmjs.com/package/mime-db). If not exists,
 4. just use `.html` content type from `opts.mimeTypes` and then `internalMimeTypes`. If not exists,
 5. just lookup `.html` content type from `mime-types`
 
@@ -246,20 +275,37 @@ You could define your extended content types using `opts.mimeTypes`. This featur
 var opts_ignore: string[] = [];
 ```
 
-List of pattern to be ignored. If you want to include all files from root and inside `public/` but not the public itself, you could do as follow:
+List of pattern to be ignored. If you want to include all files from root and inside `public/` but not the public
+itself, you could do as follow:
 
 ```ts
 export default defineConfig({
     plugins: [
-        DynamicPublicDirectory( [ "public/**", "**" ], {
+        DynamicPublicDirectory(["public/**", "**"], {
             ignore: ["/public"]
-        } )
+        })
     ],
     publicDir: false,
 })
 ```
 
 **Notice:** `public/**` and `/public` are different.
+
+### `opts.followSymlinks`
+
+Are symlinks in shared folders tracked and read? If so, symlinks will work in development and be copied when running a
+build. Default `false`
+
+```js
+export default defineConfig({
+    plugins: [
+        DynamicPublicDirectory(["public/**"], {
+            followSymlinks: true
+        })
+    ],
+    publicDir: false,
+})
+```
 
 ### `opts.dst`
 
@@ -280,7 +326,7 @@ export type FDst = (params: {
     baseFile: string;   // internal normalization; most common to use this one
     dstFile: string;    // NOTE: either absolut or non-slash on beginning path to target copied;
                         //       default destination to the last filename
-    
+
     // MUTABLE
     writeBundleOptions?: NormalizedOutputOptions; // modify rollup option
     viteConfig: IViteResolvedConfig; // modify vite option
@@ -293,8 +339,12 @@ export type FDst = (params: {
 export type IFilesMapper = Partial<Record<string, string>>; // STUB: { baseTransformedFilePath: toAbsolutePath }
 ```
 
-Where the files would be copied. In default, it would reuse Rollup output or Vite output. This options allow user to reroutes to different folder, or prorammatically reroutes these copied files and rename it. Programmatically reroutes has 3 return options:
-- `string`: path with filename relative to default destination directory, or absolute path. Rules from `assets` also applied.
+Where the files would be copied. In default, it would reuse Rollup output or Vite output. This options allow user to
+reroutes to different folder, or prorammatically reroutes these copied files and rename it. Programmatically reroutes
+has 3 return options:
+
+- `string`: path with filename relative to default destination directory, or absolute path. Rules from `assets` also
+  applied.
 - `false`: do not copy file. Can be use to programmatically ignore certain file. Use this if you need complex use-case.
 - `undefined`: copy to default name and destination
 
@@ -304,8 +354,8 @@ You could reroutes to different folder:
 import path from "path/posix"; // NOTE: use posix for relative transformation
 
 DynamicPublicDirectory(["public/**"], {
-  // goto `.cache/` instead of `dist/`
-  dst: path.join(__dirname, ".cache"),
+    // goto `.cache/` instead of `dist/`
+    dst: path.join(__dirname, ".cache"),
 })
 ```
 
@@ -313,25 +363,26 @@ You could also make your own `ignore` and filter:
 
 ```ts
 DynamicPublicDirectory(["public/**"], {
-  dst: ({ dstFile, filepath, }) => filepath.match(/.jpg$/ig) ? false : undefined,
+    dst: ({dstFile, filepath,}) => filepath.match(/.jpg$/ig) ? false : undefined,
 })
 ```
 
-If you need to add more files which not depend with this plugin's internal logic; or you need to modify base for SSR, you could modify `__files`.
+If you need to add more files which not depend with this plugin's internal logic; or you need to modify base for SSR,
+you could modify `__files`.
 
 ```ts
 let nonce = false;
 
 DynamicPublicDirectory(["public/**"], {
-  dst: ({
-    opts: {__dst, ...opts}, __files, // muttable
-    dstFile, filepath, baseFile, // useful params to use
-  }) => {
-    if (!nonce) {
-      __files["new-no/existing/file.png"] = "/home/me/Pictures/image.png"
-      nonce = true;
+    dst: ({
+              opts: {__dst, ...opts}, __files, // muttable
+              dstFile, filepath, baseFile, // useful params to use
+          }) => {
+        if (!nonce) {
+            __files["new-no/existing/file.png"] = "/home/me/Pictures/image.png"
+            nonce = true;
+        }
     }
-  }
 })
 ```
 
@@ -341,7 +392,8 @@ DynamicPublicDirectory(["public/**"], {
 var opts_dot: boolean = true;
 ```
 
-Also search for dotfile (hidden files of linux). Those are in examples `.env`, `.npmrc`, `.git/`, `.gitignore/`, etc. For conveince to make everything discoverable, this option is `true` by default.
+Also search for dotfile (hidden files of linux). Those are in examples `.env`, `.npmrc`, `.git/`, `.gitignore/`, etc.
+For conveince to make everything discoverable, this option is `true` by default.
 
 ### `opts.onlyFiles`
 
@@ -349,7 +401,9 @@ Also search for dotfile (hidden files of linux). Those are in examples `.env`, `
 var opts_onlyFiles: boolean = true;
 ```
 
-Search and gather only files (with no directories). For convenience to get lower size and more countable, this option is `true` by default. If you want to also copy empty folder, you could set `false` to this options. It would be wise if you also set `opts.onlyDirectories` to `false`.
+Search and gather only files (with no directories). For convenience to get lower size and more countable, this option is
+`true` by default. If you want to also copy empty folder, you could set `false` to this options. It would be wise if you
+also set `opts.onlyDirectories` to `false`.
 
 ### `opts.onlyDirectories`
 
@@ -357,9 +411,11 @@ Search and gather only files (with no directories). For convenience to get lower
 var opts_onlyDirectories: boolean = false;
 ```
 
-Search and gather only directories (with no files). Opposite to `opts.onlyFies`, this option is `false` by default. Assuming, just copying folders is useless.
+Search and gather only directories (with no files). Opposite to `opts.onlyFies`, this option is `false` by default.
+Assuming, just copying folders is useless.
 
-> Enable this options can lead to duplication issue, the folder which contains files inside it also reached, and also all folders inside it. When coping the folder, the same folders may be copied twice or more. 
+> Enable this options can lead to duplication issue, the folder which contains files inside it also reached, and also
+> all folders inside it. When coping the folder, the same folders may be copied twice or more.
 
 ### `opts.markDirectories`
 
@@ -367,27 +423,43 @@ Search and gather only directories (with no files). Opposite to `opts.onlyFies`,
 var opts_markDirectories: boolean = true;
 ```
 
-Mark all path of directory noticeable by adding the last slash at the end of the path. For conveince, this option is `true` by default. Assume this structure:
+Mark all path of directory noticeable by adding the last slash at the end of the path. For conveince, this option is
+`true` by default. Assume this structure:
 
 ```css
-dirA/
-\_ dirAA/
+dirA
+
+/
+\_ dirAA
+
+/
 \_ file.txt
-dirB/
+dirB
+
+/
 ```
 
 The list of folder could be:
 
 ```css
-dirA/
-dirA/dirAA/
-dirA/file.txt
-dirB/
+dirA
+
+/
+dirA /dirAA/
+dirA
+
+/
+file.txt
+dirB
+
+/
 ```
 
 ## Enforced Behaviors
 
-All `opts.*` internally directly passed to `fast-glob`, so you could override `opts` types and use any `fast-glob` available flags. This is not recommended as these options already selected to fit internal logic and this plugin original use-case and ideation. Even though that, there is options that is enforced to satisfy internal logic.
+All `opts.*` internally directly passed to `fast-glob`, so you could override `opts` types and use any `fast-glob`
+available flags. This is not recommended as these options already selected to fit internal logic and this plugin
+original use-case and ideation. Even though that, there is options that is enforced to satisfy internal logic.
 
 ## `opts.absolute`
 
@@ -395,4 +467,5 @@ All `opts.*` internally directly passed to `fast-glob`, so you could override `o
 const opts_absolute: boolean = false;
 ```
 
-This option is forced to be `false`. All path would return to relative path from `cwd`. These is intended due to simpler internal logic, and easier in rejoin path to `dst`.
+This option is forced to be `false`. All path would return to relative path from `cwd`. These is intended due to simpler
+internal logic, and easier in rejoin path to `dst`.
