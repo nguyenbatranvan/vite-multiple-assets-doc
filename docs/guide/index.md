@@ -76,12 +76,6 @@ export default defineConfig({
 });
 ```
 
-### Example
-
-- [React](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/react/vite.config.ts)
-- [Solid](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/solid/vite.config.ts)
-- [Astro](https://github.com/nguyenbatranvan/vite-multiple-assets/blob/main/packages/examples/astro/astro.config.mjs)
-
 ## Options
 
 ```ts
@@ -115,6 +109,7 @@ export type IObjectAssets = {
     input: string;
     output: string;
     watch?: boolean;
+    flatten?: boolean;
 }
 var assets: IAssets = [];
 export type IAssets = (string | IObjectAssets)[];
@@ -146,39 +141,140 @@ export default defineConfig({
 })
 ```
 
-Match and out examples:
+**Match and out examples:**
 
 ```ts
 `/a/b/c/d/**` + `/a/b/c/d/efg.txt` = `efg.txt`
     `/a/b/{\x01,c}/d/**` + `/a/b/c/d/efg.txt` = `c/d/efg.txt`
 ```
 
+#### Detailed explanation `/x01`
+
+This character is used to specify whether you want the output to include the current directory containing this character
+or not.
+
+**I have `shared-assets` folder**:
+```tree
+.
+├── shared-assets
+│   ├── image.png
+│   └── logo.png
+```
+
+#### Using with `\x01`
+
+```ts
+DynamicPublicDirectory(["{\x01, shared-assets}/**"])
+```
+
+- Result bundle:
+
+```tree
+├── dist
+│   ├── shared-assets
+│   │   ├── image.png
+│   │   ├── logo.png
+```
+
+- Usage in component
+
+`App.tsx`
+
+```tsx
+<img src="/shared-assets/image.png"/>
+```
+#### Using outside `\x01`
+
+```ts
+DynamicPublicDirectory(["shared-assets/**"])
+```
+
+- Result bundle:
+
+```tree
+├── dist
+│   ├── image.png
+│   ├── logo.png
+```
+
+- Usage in component
+
+`App.tsx`
+
+```tsx
+<img src="/image.png"/>
+```
+
+##### This works the same in `development` environment
+
 ### Custom output assets
 
 Similar to the above configurations, the only difference is that you can add output with your own paths
+
+- `input`: Path of public folder
+- `output`: output of public directory
+- `watch`: Watch shared folder changes! Whenever a new file is added or deleted, the page will automatically reload.
+  Default `false`.
+- `flatten`: flatten the directory, to a single level! Do not copy subdirectories
+
+#### Flatten
+
+- I have `public` folder:
+
+```tree
+.
+├── public
+│   ├── sub-folder
+│   │   ├── sub-file.png
+│   │   ├── nested-sub-folder
+│   │   │   ├── nested-sub-file.png
+│   ├── image.png
+│   └── logo.png
+```
+
+`vite.config.ts`:
 
 ```ts
 export default defineConfig({
     plugins: [
         DynamicPublicDirectory([
             {
-                input: "public/{\x01, models}/**",
-                output: "/shared/assets/models"
-            }, // order is important
-            "public/**", // same {input:public/**, output:""}
-            "../../assets/**" // you could go to upper level
+                // copy file ignore parent folder.
+                // If you want to copy the parent directory as well, the syntax would be simply
+                // {\x01, public}/**
+                input: "public/**",
+                output: "/shared",
+                flatten: false // default
+            }
         ])
     ],
     publicDir: false,
 })
 ```
 
-- `input`: Path of public folder
-- `output`: output of public directory
-- `watch`: Watch shared folder changes! Whenever a new file is added or deleted, the page will automatically reload.
-  Default `false`.
+- Result with `flatten = false` in `dist`:
 
-so files in `public/models` will be copied to `shared/assets/models`
+```tree
+.
+├── shared
+│   ├── sub-folder
+│   │   ├── sub-file.png
+│   │   ├── nested-sub-folder
+│   │   │   ├── nested-sub-file.png
+│   ├── image.png
+│   └── logo.png
+```
+
+- if `flatten = true`:
+
+```tree
+.
+├── shared
+│   ├── image.png
+│   ├── sub-file.png
+│   ├── nested-sub-file.png
+│   └── logo.png
+```
 
 ### `opts.cwd`
 
@@ -191,12 +287,10 @@ Where does the beginning root to traverse all directory and files. If you not de
 
 ### `opts.cacheOptions`
 
-```ts
+```text
 {
-    "Cache-Control"
-:
-    "max-age=31536000, immutable",
-...
+    "Cache-Control": "max-age=31536000, immutable"
+    // ...
 }
 ```
 

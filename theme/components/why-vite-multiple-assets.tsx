@@ -1,12 +1,12 @@
 import {HomeFeature} from "rspress/theme"
 import './why-vite-multiple-assets.module.scss';
-import {containerStyle, innerContainerStyle} from "@rstack-dev/doc-ui/section-style";
 import {FrontMatterMeta} from "@rspress/shared";
+import {containerStyle, innerContainerStyle} from "@rstack-dev/doc-ui/dist/section-style";
 
 export function WhyViteMultipleAssets() {
 
     const features: FrontMatterMeta = {
-        features:[{
+        features: [{
             title: "No copy",
             details: `No copy file when run dev, help with no impact on performance when launching apps with vite.`,
             icon: `🏃🏻‍♀️`
@@ -17,6 +17,22 @@ export function WhyViteMultipleAssets() {
         }, {
             title: "SSR support",
             details: `Support Server Side Rendering`,
+            icon: `🌍`
+        }, {
+            title: "Ignore file",
+            details: `Support for ignore desired files`,
+            icon: `🌍`
+        }, {
+            title: "Folder output",
+            details: `Change folder output`,
+            icon: `🌍`
+        }, {
+            title: "Watch folder",
+            details: `Watch, reload page if folder changes`,
+            icon: `🌍`
+        }, {
+            title: "Symlink",
+            details: `Support symlink`,
             icon: `🌍`
         }]
     };
