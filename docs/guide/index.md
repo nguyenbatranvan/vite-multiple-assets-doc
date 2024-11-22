@@ -148,12 +148,13 @@ export default defineConfig({
     `/a/b/{\x01,c}/d/**` + `/a/b/c/d/efg.txt` = `c/d/efg.txt`
 ```
 
-#### Detailed explanation `/x01`
+#### Detailed explanation `\x01`
 
 This character is used to specify whether you want the output to include the current directory containing this character
 or not.
 
 **I have `shared-assets` folder**:
+
 ```tree
 .
 ├── shared-assets
@@ -183,6 +184,7 @@ DynamicPublicDirectory(["{\x01, shared-assets}/**"])
 ```tsx
 <img src="/shared-assets/image.png"/>
 ```
+
 #### Using outside `\x01`
 
 ```ts
@@ -276,6 +278,11 @@ export default defineConfig({
 │   └── logo.png
 ```
 
+### `opts.needTransformBaseCss`
+
+- Detail issue & usage [here](https://github.com/nguyenbatranvan/vite-multiple-assets/pull/36)
+
+**Note:** This option will enable `Vite` `transform` function to work. It may have some impact on performance. If the above case doesn't apply, consider disabling this option.
 ### `opts.cwd`
 
 ```ts
