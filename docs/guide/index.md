@@ -1,18 +1,10 @@
 # Setup
 
-`vite-multiple-assets` support vite to run with multiple directory public directory.
-
-## Feature
-
-- No copy file when run dev, help with no impact on performance when launching apps with vite
-- Support automatically copy files when running build
-- Support SSR
-
-## Quick setup would be in the `vite.config.js`:
+## Quick setup would be in the :
 
 * Default with vite's configuration you can only use 1 publicDir in `vite.config.ts`
 
-```ts
+```ts title="vite.config.ts"
 export default defineConfig({
     // default is public folder
     publicDir: ''
@@ -21,17 +13,11 @@ export default defineConfig({
 
 * With this plugin you can add multiple public folders
 
-## Install
-
-```sh
-npm i -D vite-multiple-assets
-```
-
 ## Basic Usage
 
 In `vite.config.ts`
 
-```ts
+```ts title="vite.config.ts"
 import {type PluginOption} from 'vite'
 import {DynamicPublicDirectory} from "vite-multiple-assets";
 // same level as project root
@@ -63,7 +49,7 @@ export default defineConfig({
 
 In `astro.config.mjs`
 
-```ts
+```ts title="astro.config.mjs"
 import {defineConfig} from 'astro/config';
 import {astroMultipleAssets} from "vite-multiple-assets";
 
@@ -128,7 +114,7 @@ There are few things to take:
 
 For example:
 
-```ts
+```ts title="vite.config.ts"
 export default defineConfig({
     plugins: [
         DynamicPublicDirectory([
@@ -164,7 +150,7 @@ or not.
 
 #### Using with `\x01`
 
-```ts
+```ts title="vite.config.ts"
 DynamicPublicDirectory(["{\x01, shared-assets}/**"])
 ```
 
@@ -179,15 +165,14 @@ DynamicPublicDirectory(["{\x01, shared-assets}/**"])
 
 - Usage in component
 
-`App.tsx`
 
-```tsx
+```tsx title="App.tsx"
 <img src="/shared-assets/image.png"/>
 ```
 
 #### Using outside `\x01`
 
-```ts
+```ts title="vite.config.ts"
 DynamicPublicDirectory(["shared-assets/**"])
 ```
 
@@ -203,7 +188,7 @@ DynamicPublicDirectory(["shared-assets/**"])
 
 `App.tsx`
 
-```tsx
+```tsx title="App.tsx"
 <img src="/image.png"/>
 ```
 
@@ -236,7 +221,7 @@ Similar to the above configurations, the only difference is that you can add out
 
 `vite.config.ts`:
 
-```ts
+```ts title="vite.config.ts"
 export default defineConfig({
     plugins: [
         DynamicPublicDirectory([
@@ -282,7 +267,9 @@ export default defineConfig({
 
 - Detail issue & usage [here](https://github.com/nguyenbatranvan/vite-multiple-assets/pull/36)
 
-**Note:** This option will enable `Vite` `transform` function to work. It may have some impact on performance. If the above case doesn't apply, consider disabling this option.
+**Note:** This option will enable `Vite` `transform` function to work. It may have some impact on performance. If the
+above case doesn't apply, consider disabling this option.
+
 ### `opts.cwd`
 
 ```ts
@@ -379,7 +366,7 @@ var opts_ignore: string[] = [];
 List of pattern to be ignored. If you want to include all files from root and inside `public/` but not the public
 itself, you could do as follow:
 
-```ts
+```ts title="vite.config.ts"
 export default defineConfig({
     plugins: [
         DynamicPublicDirectory(["public/**", "**"], {
@@ -397,7 +384,7 @@ export default defineConfig({
 Are symlinks in shared folders tracked and read? If so, symlinks will work in development and be copied when running a
 build. Default `false`
 
-```js
+```js title="vite.config.ts"
 export default defineConfig({
     plugins: [
         DynamicPublicDirectory(["public/**"], {
@@ -451,7 +438,7 @@ has 3 return options:
 
 You could reroutes to different folder:
 
-```ts
+```ts title="vite.config.ts"
 import path from "path/posix"; // NOTE: use posix for relative transformation
 
 DynamicPublicDirectory(["public/**"], {
@@ -462,7 +449,7 @@ DynamicPublicDirectory(["public/**"], {
 
 You could also make your own `ignore` and filter:
 
-```ts
+```ts title="vite.config.ts"
 DynamicPublicDirectory(["public/**"], {
     dst: ({dstFile, filepath,}) => filepath.match(/.jpg$/ig) ? false : undefined,
 })
@@ -471,7 +458,7 @@ DynamicPublicDirectory(["public/**"], {
 If you need to add more files which not depend with this plugin's internal logic; or you need to modify base for SSR,
 you could modify `__files`.
 
-```ts
+```ts title="vite.config.ts"
 let nonce = false;
 
 DynamicPublicDirectory(["public/**"], {
